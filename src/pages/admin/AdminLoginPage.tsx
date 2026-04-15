@@ -20,7 +20,7 @@ const AdminLoginPage = () => {
     try {
       // Use fetch directly to avoid the token-routing logic in fetchApi
       // (admin/login is public and doesn't need the admin_token yet)
-      const res = await fetch(`${import.meta.env.VITE_BASE_URL || 'http://localhost:5000'}/api/auth/admin/login`, {
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL || 'https://api.mipar.in'}/api/auth/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
