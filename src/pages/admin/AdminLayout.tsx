@@ -1,9 +1,22 @@
-import { Link, Outlet, useLocation, Navigate, useNavigate } from 'react-router-dom';
-import { Package, ShoppingBag, LogOut, ChevronLeft, LayoutDashboard } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useQueryClient } from '@tanstack/react-query';
-import { useAdminOrders } from '@/hooks/useOrders';
-import { useIdols } from '@/hooks/useIdols';
+import {
+  Link,
+  Outlet,
+  useLocation,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
+import {
+  Package,
+  ShoppingBag,
+  LogOut,
+  ChevronLeft,
+  LayoutDashboard,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAdminOrders } from "@/hooks/useOrders";
+import { useIdols } from "@/hooks/useIdols";
+import miparLogo from "@/assets/mipar-logo.png";
 
 const AdminLayout = () => {
   const location = useLocation();
@@ -11,25 +24,36 @@ const AdminLayout = () => {
   const queryClient = useQueryClient();
 
   // Guard: only allow access if admin_token exists
-  const adminToken = localStorage.getItem('admin_token');
+  const adminToken = localStorage.getItem("admin_token");
   if (!adminToken) return <Navigate to="/admin" replace />;
 
   // Live counts from API
   const { data: orders = [] } = useAdminOrders();
   const { data: idols = [] } = useIdols();
-  const pendingCount = orders.filter((o) => o.status === 'pending').length;
+  const pendingCount = orders.filter((o) => o.status === "pending").length;
 
   const handleLogout = () => {
-    localStorage.removeItem('admin_token');
-    queryClient.removeQueries({ queryKey: ['admin-orders'] });
-    queryClient.removeQueries({ queryKey: ['dashboard-stats'] });
-    queryClient.removeQueries({ queryKey: ['idols'] });
-    navigate('/admin');
+    localStorage.removeItem("admin_token");
+    queryClient.removeQueries({ queryKey: ["admin-orders"] });
+    queryClient.removeQueries({ queryKey: ["dashboard-stats"] });
+    queryClient.removeQueries({ queryKey: ["idols"] });
+    navigate("/admin");
   };
 
   const links = [
-    { to: '/admin/idols', label: 'Manage Idols', icon: Package, count: idols.length },
-    { to: '/admin/orders', label: 'Orders', icon: ShoppingBag, count: orders.length, badge: pendingCount },
+    {
+      to: "/admin/idols",
+      label: "Manage Idols",
+      icon: Package,
+      count: idols.length,
+    },
+    {
+      to: "/admin/orders",
+      label: "Orders",
+      icon: ShoppingBag,
+      count: orders.length,
+      badge: pendingCount,
+    },
   ];
 
   return (
@@ -38,20 +62,23 @@ const AdminLayout = () => {
       <aside className="w-72 bg-secondary text-secondary-foreground flex flex-col sticky top-0 h-screen">
         {/* Brand */}
         <div className="p-6 border-b border-secondary-foreground/10">
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-lg">🙏</span>
-            </div>
-            <div>
-              <h2 className="font-display font-bold text-lg text-secondary-foreground leading-none">MIPAR</h2>
-              <span className="text-[11px] text-secondary-foreground/60 uppercase tracking-[0.2em]">Admin Panel</span>
-            </div>
+          <Link to="/" className="flex flex-col gap-2 group">
+            <img
+              src={miparLogo}
+              alt="Mipar"
+              className="h-11 w-auto rounded-lg"
+            />
+            <span className="text-[11px] text-secondary-foreground/60 uppercase tracking-[0.2em]">
+              Admin Panel
+            </span>
           </Link>
         </div>
 
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-1">
-          <p className="text-[11px] uppercase tracking-widest text-secondary-foreground/40 font-medium px-4 mb-3">Management</p>
+          <p className="text-[11px] uppercase tracking-widest text-secondary-foreground/40 font-medium px-4 mb-3">
+            Management
+          </p>
           {links.map((l) => {
             const active = location.pathname === l.to;
             return (
@@ -60,8 +87,8 @@ const AdminLayout = () => {
                 to={l.to}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
                   active
-                    ? 'bg-primary text-secondary shadow-lg shadow-primary/20'
-                    : 'text-secondary-foreground/70 hover:bg-secondary-foreground/5 hover:text-secondary-foreground'
+                    ? "bg-primary text-secondary shadow-lg shadow-primary/20"
+                    : "text-secondary-foreground/70 hover:bg-secondary-foreground/5 hover:text-secondary-foreground"
                 }`}
               >
                 <l.icon className="w-5 h-5 shrink-0" />
@@ -75,9 +102,13 @@ const AdminLayout = () => {
                   )}
                   {/* Total count */}
                   {l.count > 0 && (
-                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                      active ? 'bg-secondary/20 text-secondary' : 'bg-secondary-foreground/10 text-secondary-foreground/60'
-                    }`}>
+                    <span
+                      className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                        active
+                          ? "bg-secondary/20 text-secondary"
+                          : "bg-secondary-foreground/10 text-secondary-foreground/60"
+                      }`}
+                    >
                       {l.count}
                     </span>
                   )}
